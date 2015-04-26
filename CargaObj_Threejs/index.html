@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title> Carga de un Objeto en 3D con three.js</title>
+  <meta charset="utf-8">
+</head>
+<body style="margin: 0;">
+
+		<script src="js/loaders/three.min.js"></script>
+
+		<script src="js/loaders/OrbitControls.js"></script>
+  
+        
+        
+	<script>
+
+	  var scene, camera, renderer;
+
+    init();
+    animate();
+
+    // Setear la escena
+    function init() {
+
+      // Crear la escena y el tamaño de la escena con el ancho y alto de la misma ventana
+      scene = new THREE.Scene();
+      var WIDTH = window.innerWidth,
+          HEIGHT = window.innerHeight;
+
+      // Crear una variable renderer para renderisar la pantalla
+      renderer = new THREE.WebGLRenderer({antialias:true});
+      renderer.setSize(WIDTH, HEIGHT);
+      document.body.appendChild(renderer.domElement);
+
+      // Crear una camara 
+      camera = new THREE.PerspectiveCamera(45, WIDTH / HEIGHT, 0.1, 20000);
+      camera.position.set(0,10,15);
+      scene.add(camera);
+
+      // Crear un addEventListener que re ajuste el tamaño de la pantalla a medida que se va orbitando y renderisando
+      window.addEventListener('resize', function() {
+        var WIDTH = window.innerWidth,
+            HEIGHT = window.innerHeight;
+        renderer.setSize(WIDTH, HEIGHT);
+        camera.aspect = WIDTH / HEIGHT;
+        camera.updateProjectionMatrix();
+      });
+
+      // poner el color al fondo del a escena
+      renderer.setClearColorHex(0xffffff, 1);
+
+      // Crear una luz con un color y un posicion
+      var light = new THREE.PointLight(0xffffff);
+      light.position.set(-100,200,100);
+      scene.add(light);
+
+      var loader = new THREE.JSONLoader();
+      loader.load( "models/nave01.json", function(geometry){
+        var material = new THREE.MeshLambertMaterial({color: 0xffffff});
+        mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+      });
+      // Adicionar los controles Orbit para el mouse y con estas poder mover la camara
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    }
+   // Renderisar la escena y actualiza el render cuando se necesite
+    function animate() {
+
+     
+      requestAnimationFrame(animate);
+      
+      //Renderisa la escena y agrega un update o actualizacion al control
+      renderer.render(scene, camera);
+      controls.update();
+
+    }
+
+  </script>
+
+
+	</body>
+</html>
